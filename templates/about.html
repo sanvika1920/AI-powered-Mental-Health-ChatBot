@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About | Emotion-Aware Conversational System for Mental Wellness Support</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='about.css') }}">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div>
+      <h1>Emotion-Aware Conversational System for Mental Wellness Support</h1>
+      <p>Your Companion for Emotional Well-being</p>
+    </div>
+    <div class="nav-links">
+      <a href="{{ url_for('chat') }}">Home</a>
+      <a href="{{ url_for('about') }}" class="active">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <div class="about-container">
+    <h2>About Us</h2>
+    <p>
+      Welcome to our Mental Health Chatbot platform, a supportive digital space for anyone seeking understanding,
+      empathy, and effective coping strategies.
+    </p>
+
+    <h3>Our Mission</h3>
+    <p>
+      Our mission is to make mental health support accessible and approachable for everyone, anytime. We believe that
+      everyone deserves to be heard and supported, and our chatbot provides a safe, non-judgmental environment to help
+      users express their feelings, learn about emotional wellness, and get actionable coping advice.
+    </p>
+
+    <h3>What We Offer</h3>
+    <ul>
+      <li><strong>24/7 Empathetic Conversations:</strong> Our chatbot uses advanced AI (Gemini by Google) to provide natural, supportive, and context-aware conversations. It listens to your concerns and responds with empathy and understanding.</li>
+      <li><strong>Emotion Recognition:</strong> The platform can detect and track your emotions over time, helping you reflect on your mood patterns and emotional well-being.</li>
+      <li><strong>Crisis Detection:</strong> Our system monitors for signs of crisis and provides immediate resources and guidance, prioritizing your safety.</li>
+      <li><strong>Coping Strategies:</strong> Get personalized coping techniques, stress-relief tips, and wellness suggestions tailored to your situation and mood.</li>
+      <li><strong>Privacy & Security:</strong> We are committed to your privacy. Your interactions are confidential, and your data is securely protected.</li>
+    </ul>
+
+    <h3>Why Use Our Chatbot?</h3>
+    <ul>
+      <li><strong>Instant Support:</strong> No waiting, appointments, or stigma—just a listening ear when you need it most.</li>
+      <li><strong>Guided by Science:</strong> The chatbot leverages psychological best practices, natural language processing, and up-to-date knowledge to support well-being.</li>
+      <li><strong>User-Centered Design:</strong> Our platform is easy to use, welcoming, and focused on the needs of each user.</li>
+    </ul>
+
+    <h3>Disclaimer</h3>
+    <p>
+      This chatbot is designed to provide general emotional support and coping advice. It is not a substitute for
+      professional mental health services. If you are in crisis or need urgent assistance, please contact a mental
+      health professional or emergency services.
+    </p>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Emotion-Aware Conversational System for Mental Wellness Support | Designed with ❤️ by Sanvika & Sireesha
+  </footer>
+
+</body>
+</html>

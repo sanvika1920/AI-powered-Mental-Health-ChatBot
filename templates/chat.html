@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Emotion-Aware Conversational System for Mental Wellness Support</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background-color: #f2f3f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Top Bar */
+    .navbar {
+      background-color: #4a90e2;
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .navbar p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    .nav-links .active {
+        text-decoration: underline;
+    }
+    /* Chat Container */
+    #chat-container {
+      width: 70%;
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    #chat-box {
+      border: none;
+      height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      background-color: #e5ddd5;
+      border-radius: 10px;
+    }
+
+    .message {
+      display: flex;
+      margin: 10px 0;
+    }
+
+    .user-message {
+      justify-content: flex-end;
+    }
+
+    .user-bubble {
+      background-color: #dcf8c6;
+      color: #333;
+      padding: 10px 15px;
+      border-radius: 18px 18px 0 18px;
+      max-width: 60%;
+      word-wrap: break-word;
+    }
+
+    .bot-message {
+      justify-content: flex-start;
+    }
+
+    .bot-bubble {
+      background-color: #fff;
+      color: #333;
+      padding: 10px 15px;
+      border-radius: 18px 18px 18px 0;
+      max-width: 60%;
+      border: 1px solid #ddd;
+      word-wrap: break-word;
+    }
+
+    /* Input area */
+    #chat-form {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      background-color: #4a90e2;
+      border: none;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    button:hover {
+      background-color: #357abd;
+    }
+
+    /* Crisis message */
+    #crisis-prompt {
+      display: none;
+      margin-top: 10px;
+      color: red;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /* Risk Level */
+    #risk-level {
+      font-weight: bold;
+      color: #4a90e2;
+    }
+
+    /* Mood Dashboard and Summary section */
+    .bottom-section {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+
+    .bottom-box {
+      width: 48%;
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 10px;
+      color: #777;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div>
+      <h1>Emotion-Aware Conversational System for Mental Wellness Support</h1>
+      <p>Your Companion for Emotional Well-being</p>
+    </div>
+    <div class="nav-links">
+        <a href="{{ url_for('chat') }}" class="active">Home</a>
+        <a href="{{ url_for('about') }}">About</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </div>
+
+  <!-- Chat Section -->
+  <div id="chat-container">
+    <h2 style="text-align:center;">💬 Chat with our AI-Powered Mental Health Chatbot</h2>
+
+    <div id="chat-box">
+      {% for chat in history %}
+      <div class="message user-message">
+        <div class="user-bubble"><strong>You:</strong> {{ chat.user_message }}</div>
+      </div>
+      <div class="message bot-message">
+        <div class="bot-bubble"><strong>Bot:</strong> {{ chat.bot_response }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <form id="chat-form">
+      <input type="text" id="user-input" autocomplete="off" placeholder="Type your message...">
+      <button type="submit">Send</button>
+    </form>
+
+    <div id="crisis-prompt">
+      It seems like you might be going through a tough time. Would you like some support resources or help right now?
+    </div>
+
+    <div style="margin-top:10px; text-align:center;">
+      <strong>Risk Level:</strong> <span id="risk-level">Low</span>
+    </div>
+  </div>
+
+  <!-- Mood Dashboard & Summary -->
+  <div class="bottom-section">
+    <div class="bottom-box">
+      <h3>📊 Mood Dashboard</h3>
+      <a href="{{ url_for('mood_dashboard') }}">View Dashboard →</a>
+    </div>
+    <div class="bottom-box">
+      <h3>📄 Summary</h3>
+      <a href="{{ url_for('summary') }}">View Summary →</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Emotion-Aware Conversational System for Mental Wellness Support | Designed with ❤️ by Sanvika & Sireesha
+  </footer>
+
+  <script>
+  $(document).ready(function() {
+    $('#chat-form').on('submit', function(e) {
+      e.preventDefault();
+      const message = $('#user-input').val().trim();
+      if (!message) return;
+
+      $('#chat-box').append(
+        '<div class="message user-message"><div class="user-bubble"><strong>You:</strong> ' + message + '</div></div>'
+      );
+      $('#user-input').val('');
+      $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+
+      $.post('/chat', { message: message }, function(data) {
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        $('#chat-box').append(
+          '<div class="message bot-message"><div class="bot-bubble"><strong>Bot:</strong> ' + data.bot + '</div></div>'
+        );
+        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+
+        if (data.crisis) {
+          $('#crisis-prompt').show();
+        } else {
+          $('#crisis-prompt').hide();
+        }
+
+        $('#risk-level').text(data.risk_level);
+      });
+    });
+  });
+  </script>
+
+</body>
+</html>

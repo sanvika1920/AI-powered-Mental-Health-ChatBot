@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Emotion-Aware Conversational System for Mental Wellness Support</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Signup Container -->
+    <div class="signup-container">
+        <div class="title-section">
+            <h1>Emotion-Aware Conversational System for Mental Wellness Support</h1>
+            <p class="slogan">Your Companion for Emotional Wellness</p>
+        </div>
+        
+        <h2>Create Account</h2>
+
+        <!-- Flash Messages (if any) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('signup') }}">
+            <input type="text" name="username" placeholder="Username" required autocomplete="username" minlength="3">
+            <input type="email" name="email" placeholder="Email" required autocomplete="email">
+            <input type="password" name="password" placeholder="Password" required autocomplete="new-password" minlength="6">
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <p class="login-text">
+            Already have an account? <a href="{{ url_for('login') }}">Login</a>
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Emotion-Aware Conversational System for Mental Wellness Support | All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>

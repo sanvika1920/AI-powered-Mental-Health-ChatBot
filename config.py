@@ -1,0 +1,8 @@
+SECRET_KEY = '930e820c5139220680362199f5279f81e13743c3424ca6d2701e0f4d576fd9af'
+
+MYSQL_HOST = 'localhost'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = 'sanvi1920'
+MYSQL_DB = 'mental_health_chatbot'
+MYSQL_CURSORCLASS = 'DictCursor'
+GEMINI_API_KEY = 'AIzaSyCCqYWsoU-X2ie6z0vqoEMb3ozpzKmo8gs'

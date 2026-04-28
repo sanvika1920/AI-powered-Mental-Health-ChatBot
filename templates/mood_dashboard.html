@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mood Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mood_dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <!-- 🔹 Navbar -->
+    <header class="navbar">
+        <div class="logo-section">
+            <h1>Emotion-Aware Conversational System for Mental Wellness Support</h1>
+            <p class="slogan">Your Companion for Emotional Wellness</p>
+        </div>
+        <nav>
+            <a href="{{ url_for('chat') }}">Home</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+            <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+        </nav>
+    </header>
+
+    <!-- 🔹 Buttons -->
+    <div class="top-buttons">
+        <button id="exportPDF">Download Insights as PDF</button>
+        <a href="{{ url_for('chat') }}" class="btn-secondary">Back to Chat</a>
+    </div>
+
+    <!-- 🔹 Dashboard Content -->
+    <div id="dashboard-container" class="dashboard">
+        <h2>Your Emotional Insights</h2>
+
+        <!-- Graphs Section -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <canvas id="dailyTrendChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <canvas id="weeklyTrendChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <canvas id="emotionPieChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <canvas id="heatmapChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <canvas id="crisisTimelineChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <div class="emotion-section">
+                <div class="emotion-card">
+                    <h3>Crisis Messages Summary</h3>
+                    <p>Total Crisis Messages: <strong>{{ crisis_messages }}</strong></p>
+                    <p>Percentage of Crisis Messages: <strong>{{ crisis_percentage }}%</strong></p>
+                </div>
+                
+                <div class="emotion-card">
+                    <h3>Top 3 Emotions</h3>
+                    <ul>
+                        {% for emotion, count in top_emotions.items() %}
+                            <li>{{ emotion }}: {{ count }} times</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="emotion-card">
+                    <h3>Emotion Change Summary (Last 4 Weeks)</h3>
+                    <ul>
+                        {% for emotion, change in change_summary.items() %}
+                            <li>{{ emotion }} → {{ change }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+            </div>     
+        </div>
+    </div>
+
+    <!-- 🔹 Footer -->
+    <footer>
+        <p>© 2025 Emotion-Aware Conversational System for Mental Wellness Support | Designed with ❤️ by Sanvika & Sireesha</p>
+    </footer>
+
+    <!-- 🔹 Scripts -->
+    <script>
+        const emotionLabels = {{ data.emotion_labels|default([])|tojson }};
+        const dayLabels = {{ data.day_labels|default([])|tojson }};
+        const dailyCounts = {{ data.counts|default([])|tojson }};
+        const pieData = {{ data.pie_data|default({})|tojson }};
+        const crisisData = {{ data.crisis_data|default({})|tojson }};
+        const weeklyLabels = {{ weekly_labels|default([])|tojson }};
+        const weeklyData = {{ weekly_data|default([])|tojson }};
+        const hourlyHeatmapData = {{ hourly_heatmap_data|default([])|tojson }};
+        const crisisTimelineLabels = {{ crisis_timeline_labels|default([])|tojson }};
+        const crisisTimelineData = {{ crisis_timeline_data|default([])|tojson }};
+
+        // Chart.js Code (same as your original)
+        const dailyDatasets = emotionLabels.map((emotion, i) => ({
+            label: emotion,
+            data: dailyCounts.map(day => day[i]),
+            borderColor: `hsl(${i * 60}, 70%, 50%)`,
+            fill: false,
+            tension: 0.3
+        }));
+
+        new Chart(document.getElementById('dailyTrendChart'), {
+            type: 'line',
+            data: { labels: dayLabels, datasets: dailyDatasets },
+            options: { plugins: { title: { display: true, text: 'Daily Emotional Fluctuation' } } }
+        });
+
+        const weeklyDatasets = emotionLabels.map((emotion, i) => ({
+            label: emotion,
+            data: weeklyData.map(week => week[i]),
+            borderColor: `hsl(${i * 50}, 80%, 40%)`,
+            fill: false,
+            tension: 0.25
+        }));
+
+        new Chart(document.getElementById('weeklyTrendChart'), {
+            type: 'line',
+            data: { labels: weeklyLabels, datasets: weeklyDatasets },
+            options: { plugins: { title: { display: true, text: 'Weekly Emotional Trend' } } }
+        });
+
+        new Chart(document.getElementById('emotionPieChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(pieData),
+                datasets: [{
+                    data: Object.values(pieData),
+                    backgroundColor: Object.keys(pieData).map((_, i) => `hsl(${i * 70}, 70%, 60%)`)
+                }]
+            },
+            options: { plugins: { title: { display: true, text: 'Emotion Distribution' } } }
+        });
+
+        const heatmapDatasets = emotionLabels.map((emotion, idx) => ({
+            label: emotion,
+            data: hourlyHeatmapData[idx],
+            backgroundColor: `hsl(${idx * 60}, 60%, 60%)`
+        }));
+
+        new Chart(document.getElementById('heatmapChart'), {
+            type: 'bar',
+            data: { labels: [...Array(24).keys()], datasets: heatmapDatasets },
+            options: {
+                plugins: { title: { display: true, text: 'Emotions by Hour of Day' } },
+                scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+            }
+        });
+
+        new Chart(document.getElementById('crisisTimelineChart'), {
+            type: 'bar',
+            data: { labels: crisisTimelineLabels, datasets: [{ label: 'Crisis Messages', data: crisisTimelineData, backgroundColor: 'rgba(255, 0, 0, 0.6)' }] },
+            options: { plugins: { title: { display: true, text: 'Crisis Messages Over Time' } } }
+        });
+
+        // PDF Export
+        document.getElementById("exportPDF").addEventListener("click", function() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const dashboard = document.getElementById("dashboard-container");
+            html2canvas(dashboard, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const imgHeight = (canvas.height * pageWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeight);
+                pdf.save("Mood_Dashboard_Report.pdf");
+            });
+        });
+    </script>
+</body>
+</html>

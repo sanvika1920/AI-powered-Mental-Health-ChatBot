@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversation Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='summary.css') }}">
+</head>
+<body>
+
+    <!-- 🔹 Navbar -->
+    <header class="navbar">
+        <div class="logo-section">
+            <h1>Emotion-Aware Conversational System for Mental Wellness Support</h1>
+            <p class="slogan">Your Companion for Emotional Wellness</p>
+        </div>
+        <nav>
+            <a href="{{ url_for('chat') }}">Home</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+            <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+        </nav>
+    </header>
+
+    <!-- 🔹 Buttons -->
+    <div class="top-buttons">
+        <a href="{{ url_for('export_summary') }}" class="btn-primary">Download Summary as PDF</a>
+        <a href="{{ url_for('chat') }}" class="btn-secondary">Back to Chat</a>
+    </div>
+
+    <!-- 🔹 Summary Content -->
+    <div class="dashboard">
+        <h2>Conversation Summaries</h2>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Daily Summary</h3>
+                <p>{{ daily_summary }}</p>
+            </div>
+            <div class="summary-card">
+                <h3>Weekly Summary</h3>
+                <p>{{ weekly_summary }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 Footer -->
+    <footer>
+        <p>© 2025 Emotion-Aware Conversational System for Mental Wellness Support | Designed with ❤️ by Sanvika & Sireesha</p>
+    </footer>
+
+</body>
+</html>
